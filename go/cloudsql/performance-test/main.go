@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"database/sql"
 	"flag"
@@ -24,7 +25,7 @@ type config struct {
 }
 
 func (c *config) registerFlags() {
-	flag.StringVar(&c.Table, "scratch_table", "scratch", "name of table to use; should not already exist")
+	flag.StringVar(&c.Table, "table", "scratch", "name of table to use; should not already exist")
 	flag.StringVar(&c.DB, "db", "", "name of schema to use")
 	flag.StringVar(&c.Conn, "conn", "", "connection name to use")
 	flag.StringVar(&c.Socket, "socket", "/cloudsql", "socket file path for cloud sql")
@@ -118,7 +119,7 @@ func insert(ctx context.Context, db *sql.DB, tableName string, id int) error {
 	_, err := db.ExecContext(
 		ctx,
 		fmt.Sprintf("INSERT INTO %s VALUES(?, ?)", tableName),
-		id, make([]byte, 1<<10),
+		id, bytes.Repeat([]byte("0"), 1<<10),
 	)
 	return err
 }
@@ -128,7 +129,7 @@ func update(ctx context.Context, db *sql.DB, tableName string, id int) error {
 	_, err := db.ExecContext(
 		ctx,
 		fmt.Sprintf("UPDATE %s SET value=? WHERE id=?", tableName),
-		make([]byte, 1<<10), id,
+		bytes.Repeat([]byte("0"), 1<<10), id,
 	)
 	return err
 }
