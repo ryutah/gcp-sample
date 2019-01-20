@@ -128,6 +128,7 @@ func (r *Recorder) record(ok bool, d time.Duration) {
 func (r *Recorder) Aggregate() string {
 	var (
 		min, _    = stats.Min(r.durations)
+		max, _    = stats.Max(r.durations)
 		medi, _   = stats.Median(r.durations)
 		tile25, _ = stats.Percentile(r.durations, 25)
 		tile50, _ = stats.Percentile(r.durations, 50)
@@ -137,6 +138,7 @@ func (r *Recorder) Aggregate() string {
 	)
 	return fmt.Sprintf(
 		"min: %v\n"+
+			"max: %v\n"+
 			"median: %v\n"+
 			"25th percentile: %v\n"+
 			"50th percentile: %v\n"+
@@ -144,6 +146,7 @@ func (r *Recorder) Aggregate() string {
 			"95th percentile: %v\n"+
 			"99th percentile: %v\n",
 		time.Duration(min),
+		time.Duration(max),
 		time.Duration(medi),
 		time.Duration(tile25),
 		time.Duration(tile50),
