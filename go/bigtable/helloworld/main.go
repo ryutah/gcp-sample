@@ -115,7 +115,12 @@ func set(ctx context.Context, table *bigtable.Table, key string, val value) erro
 }
 
 func get(ctx context.Context, table *bigtable.Table, key string) (*value, error) {
-	row, err := table.ReadRow(ctx, key)
+	// read only has quarify named foo
+	row, err := table.ReadRow(ctx, key,
+		bigtable.RowFilter(bigtable.ChainFilters(
+			bigtable.ColumnFilter("foo"),
+		)),
+	)
 	if err != nil {
 		return nil, err
 	}
